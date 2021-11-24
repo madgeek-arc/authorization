@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +33,8 @@ class AuthorizationApplicationTests {
     private static final String ACTION_VALIDATE = "validate";
     private static final String OBJECT_RESOURCE1 = "resource1";
     private static final String OBJECT_RESOURCE2 = "resource2";
+
+    private final List<AuthTriple> triples = new ArrayList<>();
 
 
     @Test
@@ -69,23 +72,23 @@ class AuthorizationApplicationTests {
     @Order(2)
     void createEntries() {
         AuthTriple triple = new AuthTriple(SUBJECT_USER1, ACTION_READ, OBJECT_RESOURCE1);
-        tripleRepository.save(triple);
+        triples.add(tripleRepository.save(triple));
         triple = new AuthTriple(SUBJECT_USER1, ACTION_WRITE, OBJECT_RESOURCE1);
-        tripleRepository.save(triple);
+        triples.add(tripleRepository.save(triple));
         triple = new AuthTriple(SUBJECT_USER1, ACTION_MANAGE, OBJECT_RESOURCE1);
-        tripleRepository.save(triple);
+        triples.add(tripleRepository.save(triple));
         triple = new AuthTriple(SUBJECT_USER1, ACTION_VALIDATE, OBJECT_RESOURCE1);
-        tripleRepository.save(triple);
+        triples.add(tripleRepository.save(triple));
 
         triple = new AuthTriple(SUBJECT_USER2, ACTION_WRITE, OBJECT_RESOURCE1);
-        tripleRepository.save(triple);
+        triples.add(tripleRepository.save(triple));
         triple = new AuthTriple(SUBJECT_USER2, ACTION_READ, OBJECT_RESOURCE1);
-        tripleRepository.save(triple);
+        triples.add(tripleRepository.save(triple));
 
         triple = new AuthTriple(SUBJECT_USER2, ACTION_WRITE, OBJECT_RESOURCE2);
-        tripleRepository.save(triple);
+        triples.add(tripleRepository.save(triple));
         triple = new AuthTriple(SUBJECT_USER2, ACTION_READ, OBJECT_RESOURCE2);
-        tripleRepository.save(triple);
+        triples.add(tripleRepository.save(triple));
     }
 
     @Test
@@ -115,23 +118,9 @@ class AuthorizationApplicationTests {
     @Test
     @Order(6)
     void deleteEntries() {
-        AuthTriple triple = tripleRepository.findBySubjectAndActionAndObject(SUBJECT_USER1, ACTION_READ, OBJECT_RESOURCE1).get();
-        tripleRepository.delete(triple);
-        triple = tripleRepository.findBySubjectAndActionAndObject(SUBJECT_USER1, ACTION_WRITE, OBJECT_RESOURCE1).get();
-        tripleRepository.delete(triple);
-        triple = tripleRepository.findBySubjectAndActionAndObject(SUBJECT_USER1, ACTION_MANAGE, OBJECT_RESOURCE1).get();
-        tripleRepository.delete(triple);
-        triple = tripleRepository.findBySubjectAndActionAndObject(SUBJECT_USER1, ACTION_VALIDATE, OBJECT_RESOURCE1).get();
-        tripleRepository.delete(triple);
-
-        triple = tripleRepository.findBySubjectAndActionAndObject(SUBJECT_USER2, ACTION_WRITE, OBJECT_RESOURCE1).get();
-        tripleRepository.delete(triple);
-        triple = tripleRepository.findBySubjectAndActionAndObject(SUBJECT_USER2, ACTION_READ, OBJECT_RESOURCE1).get();
-        tripleRepository.delete(triple);
-
-        triple = tripleRepository.findBySubjectAndActionAndObject(SUBJECT_USER2, ACTION_WRITE, OBJECT_RESOURCE2).get();
-        tripleRepository.delete(triple);
-        triple = tripleRepository.findBySubjectAndActionAndObject(SUBJECT_USER2, ACTION_READ, OBJECT_RESOURCE2).get();
-        tripleRepository.delete(triple);
+        for (AuthTriple triple : triples) {
+            triple = tripleRepository.findBySubjectAndActionAndObject(SUBJECT_USER1, ACTION_WRITE, OBJECT_RESOURCE1).get();
+            tripleRepository.delete(triple);
+        }
     }
 }
