@@ -1,4 +1,6 @@
-package gr.athenarc.authorization;
+package gr.athenarc.authorization.service;
+
+import gr.athenarc.authorization.domain.AuthTriple;
 
 import java.util.List;
 

@@ -1,5 +1,6 @@
-package gr.athenarc.authorization;
+package gr.athenarc.authorization.repository;
 
+import gr.athenarc.authorization.domain.AuthTriple;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -7,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface TripleRepository extends CrudRepository<AuthTriple, Long> {
+public interface AuthRepository extends CrudRepository<AuthTriple, Long> {
 
     List<AuthTriple> findBySubject(String sub);
     List<AuthTriple> findByAction(String action);

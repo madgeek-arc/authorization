@@ -1,4 +1,4 @@
-package gr.athenarc.authorization;
+package gr.athenarc.authorization.domain;
 
 import javax.persistence.*;
 

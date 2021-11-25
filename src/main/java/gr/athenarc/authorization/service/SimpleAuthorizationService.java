@@ -1,5 +1,7 @@
-package gr.athenarc.authorization;
+package gr.athenarc.authorization.service;
 
+import gr.athenarc.authorization.domain.AuthTriple;
+import gr.athenarc.authorization.repository.AuthRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -8,11 +10,11 @@ import java.util.List;
 @Service
 public class SimpleAuthorizationService implements AuthorizationService {
 
-    private final TripleRepository repository;
+    private final AuthRepository repository;
 
     @Autowired
-    public SimpleAuthorizationService(TripleRepository tripleRepository) {
-        this.repository = tripleRepository;
+    public SimpleAuthorizationService(AuthRepository authRepository) {
+        this.repository = authRepository;
     }
 
     @Override

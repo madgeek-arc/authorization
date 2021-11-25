@@ -1,5 +1,8 @@
 package gr.athenarc.authorization;
 
+import gr.athenarc.authorization.domain.AuthTriple;
+import gr.athenarc.authorization.service.AuthorizationService;
+import gr.athenarc.authorization.repository.AuthRepository;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -19,7 +22,7 @@ import static org.springframework.test.util.AssertionErrors.assertEquals;
 class AuthorizationApplicationTests {
 
     @Autowired
-    private TripleRepository tripleRepository;
+    private AuthRepository authRepository;
 
     @Autowired
     private AuthorizationService authorizationService;
@@ -43,7 +46,7 @@ class AuthorizationApplicationTests {
     void testUpdateUsingTransactional() {
         // create entry
         AuthTriple triple = new AuthTriple("test", "write", "test");
-        triple = tripleRepository.save(triple);
+        triple = authRepository.save(triple);
 
         Long id = triple.getId();
 
@@ -53,7 +56,7 @@ class AuthorizationApplicationTests {
         triple.setObject("resource");
 
         // retrieve result from db
-        Optional<AuthTriple> resultOp = tripleRepository.findById(id);
+        Optional<AuthTriple> resultOp = authRepository.findById(id);
         assertTrue(resultOp.isPresent());
         AuthTriple result = resultOp.get();
 
@@ -62,39 +65,39 @@ class AuthorizationApplicationTests {
         assertEquals("Action: ", triple.getAction(), result.getAction());
         assertEquals("Object: ", triple.getObject(), result.getObject());
 
-        tripleRepository.delete(triple);
+        authRepository.delete(triple);
     }
 
     @Test
     @Order(2)
     void createEntries() {
         AuthTriple triple = new AuthTriple(SUBJECT_USER1, ACTION_READ, OBJECT_RESOURCE1);
-        tripleRepository.save(triple);
+        authRepository.save(triple);
         triple = new AuthTriple(SUBJECT_USER1, ACTION_WRITE, OBJECT_RESOURCE1);
-        tripleRepository.save(triple);
+        authRepository.save(triple);
         triple = new AuthTriple(SUBJECT_USER1, ACTION_MANAGE, OBJECT_RESOURCE1);
-        tripleRepository.save(triple);
+        authRepository.save(triple);
         triple = new AuthTriple(SUBJECT_USER1, ACTION_VALIDATE, OBJECT_RESOURCE1);
-        tripleRepository.save(triple);
+        authRepository.save(triple);
 
         triple = new AuthTriple(SUBJECT_USER2, ACTION_WRITE, OBJECT_RESOURCE1);
-        tripleRepository.save(triple);
+        authRepository.save(triple);
         triple = new AuthTriple(SUBJECT_USER2, ACTION_READ, OBJECT_RESOURCE1);
-        tripleRepository.save(triple);
+        authRepository.save(triple);
 
         triple = new AuthTriple(SUBJECT_USER2, ACTION_WRITE, OBJECT_RESOURCE2);
-        tripleRepository.save(triple);
+        authRepository.save(triple);
         triple = new AuthTriple(SUBJECT_USER2, ACTION_READ, OBJECT_RESOURCE2);
-        tripleRepository.save(triple);
+        authRepository.save(triple);
     }
 
     @Test
     @Order(3)
     void findEntriesBySubject() {
-        List<AuthTriple> list = tripleRepository.findBySubject("user1");
+        List<AuthTriple> list = authRepository.findBySubject("user1");
         assertEquals("user2 triples = 4", 4, list.size());
 
-        list = tripleRepository.findBySubject("user2");
+        list = authRepository.findBySubject("user2");
         assertEquals("user2 triples = 4", 4, list.size());
     }
 
@@ -115,23 +118,23 @@ class AuthorizationApplicationTests {
     @Test
     @Order(6)
     void deleteEntries() {
-        AuthTriple triple = tripleRepository.findBySubjectAndActionAndObject(SUBJECT_USER1, ACTION_READ, OBJECT_RESOURCE1).get();
-        tripleRepository.delete(triple);
-        triple = tripleRepository.findBySubjectAndActionAndObject(SUBJECT_USER1, ACTION_WRITE, OBJECT_RESOURCE1).get();
-        tripleRepository.delete(triple);
-        triple = tripleRepository.findBySubjectAndActionAndObject(SUBJECT_USER1, ACTION_MANAGE, OBJECT_RESOURCE1).get();
-        tripleRepository.delete(triple);
-        triple = tripleRepository.findBySubjectAndActionAndObject(SUBJECT_USER1, ACTION_VALIDATE, OBJECT_RESOURCE1).get();
-        tripleRepository.delete(triple);
+        AuthTriple triple = authRepository.findBySubjectAndActionAndObject(SUBJECT_USER1, ACTION_READ, OBJECT_RESOURCE1).get();
+        authRepository.delete(triple);
+        triple = authRepository.findBySubjectAndActionAndObject(SUBJECT_USER1, ACTION_WRITE, OBJECT_RESOURCE1).get();
+        authRepository.delete(triple);
+        triple = authRepository.findBySubjectAndActionAndObject(SUBJECT_USER1, ACTION_MANAGE, OBJECT_RESOURCE1).get();
+        authRepository.delete(triple);
+        triple = authRepository.findBySubjectAndActionAndObject(SUBJECT_USER1, ACTION_VALIDATE, OBJECT_RESOURCE1).get();
+        authRepository.delete(triple);
 
-        triple = tripleRepository.findBySubjectAndActionAndObject(SUBJECT_USER2, ACTION_WRITE, OBJECT_RESOURCE1).get();
-        tripleRepository.delete(triple);
-        triple = tripleRepository.findBySubjectAndActionAndObject(SUBJECT_USER2, ACTION_READ, OBJECT_RESOURCE1).get();
-        tripleRepository.delete(triple);
+        triple = authRepository.findBySubjectAndActionAndObject(SUBJECT_USER2, ACTION_WRITE, OBJECT_RESOURCE1).get();
+        authRepository.delete(triple);
+        triple = authRepository.findBySubjectAndActionAndObject(SUBJECT_USER2, ACTION_READ, OBJECT_RESOURCE1).get();
+        authRepository.delete(triple);
 
-        triple = tripleRepository.findBySubjectAndActionAndObject(SUBJECT_USER2, ACTION_WRITE, OBJECT_RESOURCE2).get();
-        tripleRepository.delete(triple);
-        triple = tripleRepository.findBySubjectAndActionAndObject(SUBJECT_USER2, ACTION_READ, OBJECT_RESOURCE2).get();
-        tripleRepository.delete(triple);
+        triple = authRepository.findBySubjectAndActionAndObject(SUBJECT_USER2, ACTION_WRITE, OBJECT_RESOURCE2).get();
+        authRepository.delete(triple);
+        triple = authRepository.findBySubjectAndActionAndObject(SUBJECT_USER2, ACTION_READ, OBJECT_RESOURCE2).get();
+        authRepository.delete(triple);
     }
 }
