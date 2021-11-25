@@ -1,0 +1,21 @@
+package gr.athenarc.authorization.service;
+
+import gr.athenarc.authorization.domain.AuthTriple;
+
+import java.util.List;
+
+public interface Authorization {
+
+    boolean canDo(String sub, String action, String obj);
+    default boolean canDo(AuthTriple triple) {
+        boolean result = false;
+        if (triple != null) {
+            result = canDo(triple.getSubject(), triple.getAction(), triple.getObject());
+        }
+        return result;
+    }
+
+    List<AuthTriple> whoCan(String action, String obj);
+    List<AuthTriple> whatCan(String sub, String obj);
+    List<AuthTriple> whereCan(String sub, String action);
+}

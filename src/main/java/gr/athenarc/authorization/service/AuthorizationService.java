@@ -1,21 +1,39 @@
 package gr.athenarc.authorization.service;
 
 import gr.athenarc.authorization.domain.AuthTriple;
+import gr.athenarc.authorization.repository.AuthRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-public interface AuthorizationService {
+@Service
+public class AuthorizationService implements Authorization {
 
-    boolean canDo(String sub, String action, String obj);
-    default boolean canDo(AuthTriple triple) {
-        boolean result = false;
-        if (triple != null) {
-            result = canDo(triple.getSubject(), triple.getAction(), triple.getObject());
-        }
-        return result;
+    private final AuthRepository repository;
+
+    @Autowired
+    public AuthorizationService(AuthRepository authRepository) {
+        this.repository = authRepository;
     }
 
-    List<AuthTriple> whoCan(String action, String obj);
-    List<AuthTriple> whatCan(String sub, String obj);
-    List<AuthTriple> whereCan(String sub, String action);
+    @Override
+    public boolean canDo(String sub, String action, String obj) {
+        return repository.existsBySubjectAndActionAndObject(sub, action, obj);
+    }
+
+    @Override
+    public List<AuthTriple> whoCan(String action, String obj) {
+        return repository.findByActionAndObject(action, obj);
+    }
+
+    @Override
+    public List<AuthTriple> whatCan(String sub, String obj) {
+        return repository.findBySubjectAndObject(sub, obj);
+    }
+
+    @Override
+    public List<AuthTriple> whereCan(String sub, String action) {
+        return repository.findBySubjectAndAction(sub, action);
+    }
 }

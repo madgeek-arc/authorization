@@ -1,7 +1,7 @@
 package gr.athenarc.authorization;
 
 import gr.athenarc.authorization.domain.AuthTriple;
-import gr.athenarc.authorization.service.AuthorizationService;
+import gr.athenarc.authorization.service.Authorization;
 import gr.athenarc.authorization.repository.AuthRepository;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -25,7 +25,7 @@ class AuthorizationApplicationTests {
     private AuthRepository authRepository;
 
     @Autowired
-    private AuthorizationService authorizationService;
+    private Authorization authorization;
 
     private static final String SUBJECT_USER1 = "user1";
     private static final String SUBJECT_USER2 = "user2";
@@ -104,14 +104,14 @@ class AuthorizationApplicationTests {
     @Test
     @Order(4)
     void entryExists() {
-        boolean hasAccess = authorizationService.canDo(SUBJECT_USER2, ACTION_READ, OBJECT_RESOURCE1);
+        boolean hasAccess = authorization.canDo(SUBJECT_USER2, ACTION_READ, OBJECT_RESOURCE1);
         assertEquals("user2 can read resource2 = true", true, hasAccess);
     }
 
     @Test
     @Order(5)
     void entryNotExists() {
-        boolean hasAccess = authorizationService.canDo(SUBJECT_USER2, ACTION_VALIDATE, OBJECT_RESOURCE2);
+        boolean hasAccess = authorization.canDo(SUBJECT_USER2, ACTION_VALIDATE, OBJECT_RESOURCE2);
         assertEquals("user2 can validate resource2 = false", false, hasAccess);
     }
 
