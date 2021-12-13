@@ -19,6 +19,9 @@ public interface AuthRepository extends CrudRepository<AuthTriple, Long> {
     List<AuthTriple> findByActionAndObject(String action, String obj);
 
     Optional<AuthTriple> findBySubjectAndActionAndObject(String sub, String action, String obj);
+
+    void deleteAllBySubject(String sub);
+    void deleteBySubjectAndActionAndObject(String sub, String action, String obj);
     boolean existsBySubjectAndActionAndObject(String sub, String action, String obj);
 
 }
