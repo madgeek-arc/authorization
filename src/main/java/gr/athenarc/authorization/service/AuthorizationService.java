@@ -5,7 +5,7 @@ import gr.athenarc.authorization.repository.AuthRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Set;
 
 @Service
 public class AuthorizationService implements Authorization {
@@ -23,17 +23,17 @@ public class AuthorizationService implements Authorization {
     }
 
     @Override
-    public List<AuthTriple> whoCan(String action, String obj) {
+    public Set<AuthTriple> whoCan(String action, String obj) {
         return repository.findByActionAndObject(action, obj);
     }
 
     @Override
-    public List<AuthTriple> whatCan(String sub, String obj) {
+    public Set<AuthTriple> whatCan(String sub, String obj) {
         return repository.findBySubjectAndObject(sub, obj);
     }
 
     @Override
-    public List<AuthTriple> whereCan(String sub, String action) {
+    public Set<AuthTriple> whereCan(String sub, String action) {
         return repository.findBySubjectAndAction(sub, action);
     }
 }

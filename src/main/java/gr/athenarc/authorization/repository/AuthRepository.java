@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface AuthRepository extends CrudRepository<AuthTriple, Long> {
@@ -14,9 +15,9 @@ public interface AuthRepository extends CrudRepository<AuthTriple, Long> {
     List<AuthTriple> findByAction(String action);
     List<AuthTriple> findByObject(String obj);
 
-    List<AuthTriple> findBySubjectAndAction(String sub, String action);
-    List<AuthTriple> findBySubjectAndObject(String sub, String obj);
-    List<AuthTriple> findByActionAndObject(String action, String obj);
+    Set<AuthTriple> findBySubjectAndAction(String sub, String action);
+    Set<AuthTriple> findBySubjectAndObject(String sub, String obj);
+    Set<AuthTriple> findByActionAndObject(String action, String obj);
 
     Optional<AuthTriple> findBySubjectAndActionAndObject(String sub, String action, String obj);
 
