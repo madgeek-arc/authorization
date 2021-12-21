@@ -41,8 +41,8 @@
 	</dependencies>
 
 	<scm>
-		<connection>scm:git:ssh://git@github.com:madgeek-arc/authorization.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com:madgeek-arc/authorization.git</developerConnection>
+		<connection>scm:git:ssh://git@github.com/madgeek-arc/authorization.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/madgeek-arc/authorization.git</developerConnection>
 		<url>https://github.com/madgeek-arc/authorization.git</url>
 		<tag>authorization-0.0.2</tag>
 	</scm>
