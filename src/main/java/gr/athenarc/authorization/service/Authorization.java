@@ -1,6 +1,6 @@
 package gr.athenarc.authorization.service;
 
-import gr.athenarc.authorization.domain.Permission;
+import gr.athenarc.authorization.domain.AuthTriple;
 
 import java.util.Set;
 
@@ -8,17 +8,17 @@ public interface Authorization {
 
     boolean canDo(String sub, String action, String obj);
 
-    default boolean canDo(Permission permission) {
+    default boolean canDo(AuthTriple triple) {
         boolean result = false;
-        if (permission != null) {
-            result = canDo(permission.getSubject(), permission.getAction(), permission.getObject());
+        if (triple != null) {
+            result = canDo(triple.getSubject(), triple.getAction(), triple.getObject());
         }
         return result;
     }
 
-    Set<Permission> whoCan(String action, String obj);
+    Set<AuthTriple> whoCan(String action, String obj);
 
-    Set<Permission> whatCan(String sub, String obj);
+    Set<AuthTriple> whatCan(String sub, String obj);
 
-    Set<Permission> whereCan(String sub, String action);
+    Set<AuthTriple> whereCan(String sub, String action);
 }
