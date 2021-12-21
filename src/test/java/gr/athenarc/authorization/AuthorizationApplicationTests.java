@@ -1,8 +1,8 @@
 package gr.athenarc.authorization;
 
-import gr.athenarc.authorization.domain.Permission;
+import gr.athenarc.authorization.domain.AuthTriple;
 import gr.athenarc.authorization.service.Authorization;
-import gr.athenarc.authorization.repository.PermissionRepository;
+import gr.athenarc.authorization.repository.AuthRepository;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ import static org.springframework.test.util.AssertionErrors.assertEquals;
 class AuthorizationApplicationTests {
 
     @Autowired
-    private PermissionRepository permissionRepository;
+    private AuthRepository authRepository;
 
     @Autowired
     private Authorization authorization;
@@ -45,8 +45,8 @@ class AuthorizationApplicationTests {
     @Transactional
     void testUpdateUsingTransactional() {
         // create entry
-        Permission triple = new Permission("test", "write", "test");
-        triple = permissionRepository.save(triple);
+        AuthTriple triple = new AuthTriple("test", "write", "test");
+        triple = authRepository.save(triple);
 
         Long id = triple.getId();
 
@@ -56,48 +56,48 @@ class AuthorizationApplicationTests {
         triple.setObject("resource");
 
         // retrieve result from db
-        Optional<Permission> resultOp = permissionRepository.findById(id);
+        Optional<AuthTriple> resultOp = authRepository.findById(id);
         assertTrue(resultOp.isPresent());
-        Permission result = resultOp.get();
+        AuthTriple result = resultOp.get();
 
         // test triple-result values
         assertEquals("Subject: ", triple.getSubject(), result.getSubject());
         assertEquals("Action: ", triple.getAction(), result.getAction());
         assertEquals("Object: ", triple.getObject(), result.getObject());
 
-        permissionRepository.delete(triple);
+        authRepository.delete(triple);
     }
 
     @Test
     @Order(2)
     void createEntries() {
-        Permission triple = new Permission(SUBJECT_USER1, ACTION_READ, OBJECT_RESOURCE1);
-        permissionRepository.save(triple);
-        triple = new Permission(SUBJECT_USER1, ACTION_WRITE, OBJECT_RESOURCE1);
-        permissionRepository.save(triple);
-        triple = new Permission(SUBJECT_USER1, ACTION_MANAGE, OBJECT_RESOURCE1);
-        permissionRepository.save(triple);
-        triple = new Permission(SUBJECT_USER1, ACTION_VALIDATE, OBJECT_RESOURCE1);
-        permissionRepository.save(triple);
+        AuthTriple triple = new AuthTriple(SUBJECT_USER1, ACTION_READ, OBJECT_RESOURCE1);
+        authRepository.save(triple);
+        triple = new AuthTriple(SUBJECT_USER1, ACTION_WRITE, OBJECT_RESOURCE1);
+        authRepository.save(triple);
+        triple = new AuthTriple(SUBJECT_USER1, ACTION_MANAGE, OBJECT_RESOURCE1);
+        authRepository.save(triple);
+        triple = new AuthTriple(SUBJECT_USER1, ACTION_VALIDATE, OBJECT_RESOURCE1);
+        authRepository.save(triple);
 
-        triple = new Permission(SUBJECT_USER2, ACTION_WRITE, OBJECT_RESOURCE1);
-        permissionRepository.save(triple);
-        triple = new Permission(SUBJECT_USER2, ACTION_READ, OBJECT_RESOURCE1);
-        permissionRepository.save(triple);
+        triple = new AuthTriple(SUBJECT_USER2, ACTION_WRITE, OBJECT_RESOURCE1);
+        authRepository.save(triple);
+        triple = new AuthTriple(SUBJECT_USER2, ACTION_READ, OBJECT_RESOURCE1);
+        authRepository.save(triple);
 
-        triple = new Permission(SUBJECT_USER2, ACTION_WRITE, OBJECT_RESOURCE2);
-        permissionRepository.save(triple);
-        triple = new Permission(SUBJECT_USER2, ACTION_READ, OBJECT_RESOURCE2);
-        permissionRepository.save(triple);
+        triple = new AuthTriple(SUBJECT_USER2, ACTION_WRITE, OBJECT_RESOURCE2);
+        authRepository.save(triple);
+        triple = new AuthTriple(SUBJECT_USER2, ACTION_READ, OBJECT_RESOURCE2);
+        authRepository.save(triple);
     }
 
     @Test
     @Order(3)
     void findEntriesBySubject() {
-        List<Permission> list = permissionRepository.findBySubject("user1");
+        List<AuthTriple> list = authRepository.findBySubject("user1");
         assertEquals("user2 triples = 4", 4, list.size());
 
-        list = permissionRepository.findBySubject("user2");
+        list = authRepository.findBySubject("user2");
         assertEquals("user2 triples = 4", 4, list.size());
     }
 
@@ -118,23 +118,23 @@ class AuthorizationApplicationTests {
     @Test
     @Order(6)
     void deleteEntries() {
-        Permission triple = permissionRepository.findBySubjectAndActionAndObject(SUBJECT_USER1, ACTION_READ, OBJECT_RESOURCE1).get();
-        permissionRepository.delete(triple);
-        triple = permissionRepository.findBySubjectAndActionAndObject(SUBJECT_USER1, ACTION_WRITE, OBJECT_RESOURCE1).get();
-        permissionRepository.delete(triple);
-        triple = permissionRepository.findBySubjectAndActionAndObject(SUBJECT_USER1, ACTION_MANAGE, OBJECT_RESOURCE1).get();
-        permissionRepository.delete(triple);
-        triple = permissionRepository.findBySubjectAndActionAndObject(SUBJECT_USER1, ACTION_VALIDATE, OBJECT_RESOURCE1).get();
-        permissionRepository.delete(triple);
+        AuthTriple triple = authRepository.findBySubjectAndActionAndObject(SUBJECT_USER1, ACTION_READ, OBJECT_RESOURCE1).get();
+        authRepository.delete(triple);
+        triple = authRepository.findBySubjectAndActionAndObject(SUBJECT_USER1, ACTION_WRITE, OBJECT_RESOURCE1).get();
+        authRepository.delete(triple);
+        triple = authRepository.findBySubjectAndActionAndObject(SUBJECT_USER1, ACTION_MANAGE, OBJECT_RESOURCE1).get();
+        authRepository.delete(triple);
+        triple = authRepository.findBySubjectAndActionAndObject(SUBJECT_USER1, ACTION_VALIDATE, OBJECT_RESOURCE1).get();
+        authRepository.delete(triple);
 
-        triple = permissionRepository.findBySubjectAndActionAndObject(SUBJECT_USER2, ACTION_WRITE, OBJECT_RESOURCE1).get();
-        permissionRepository.delete(triple);
-        triple = permissionRepository.findBySubjectAndActionAndObject(SUBJECT_USER2, ACTION_READ, OBJECT_RESOURCE1).get();
-        permissionRepository.delete(triple);
+        triple = authRepository.findBySubjectAndActionAndObject(SUBJECT_USER2, ACTION_WRITE, OBJECT_RESOURCE1).get();
+        authRepository.delete(triple);
+        triple = authRepository.findBySubjectAndActionAndObject(SUBJECT_USER2, ACTION_READ, OBJECT_RESOURCE1).get();
+        authRepository.delete(triple);
 
-        triple = permissionRepository.findBySubjectAndActionAndObject(SUBJECT_USER2, ACTION_WRITE, OBJECT_RESOURCE2).get();
-        permissionRepository.delete(triple);
-        triple = permissionRepository.findBySubjectAndActionAndObject(SUBJECT_USER2, ACTION_READ, OBJECT_RESOURCE2).get();
-        permissionRepository.delete(triple);
+        triple = authRepository.findBySubjectAndActionAndObject(SUBJECT_USER2, ACTION_WRITE, OBJECT_RESOURCE2).get();
+        authRepository.delete(triple);
+        triple = authRepository.findBySubjectAndActionAndObject(SUBJECT_USER2, ACTION_READ, OBJECT_RESOURCE2).get();
+        authRepository.delete(triple);
     }
 }
