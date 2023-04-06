@@ -69,4 +69,15 @@ public class Permission {
     public void setObject(String object) {
         this.object = object;
     }
+
+    @Override
+    public String toString() {
+        return "Permission{" +
+                "id=" + id +
+                ", subjectGroup='" + subjectGroup + '\'' +
+                ", subject='" + subject + '\'' +
+                ", action='" + action + '\'' +
+                ", object='" + object + '\'' +
+                '}';
+    }
 }
