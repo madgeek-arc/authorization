@@ -36,13 +36,13 @@ public class AuthorizationAutoConfiguration {
     }
 
     @Bean(name = "authDataSource")
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(name = "authDataSource")
     public DataSource authDataSource() {
         return authDataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
     }
 
     @Bean(name = "authEntityManagerFactory")
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(name = "authEntityManagerFactory")
     public LocalContainerEntityManagerFactoryBean authEntityManagerFactory(
             EntityManagerFactoryBuilder authEntityManagerFactoryBuilder, @Qualifier("authDataSource") DataSource authDataSource) {
 
@@ -59,7 +59,7 @@ public class AuthorizationAutoConfiguration {
     }
 
     @Bean(name = "authTransactionManager")
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(name = "authTransactionManager")
     public PlatformTransactionManager authTransactionManager(
             @Qualifier("authEntityManagerFactory") EntityManagerFactory authEntityManagerFactory) {
         return new JpaTransactionManager(authEntityManagerFactory);

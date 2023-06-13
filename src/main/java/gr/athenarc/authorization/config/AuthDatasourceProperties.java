@@ -7,6 +7,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "authorization.datasource")
 public class AuthDatasourceProperties extends DataSourceProperties {
 
+    /**
+     * Hibernate specific properties.
+     */
     private HibernateProperties hibernate;
 
 
@@ -19,7 +22,17 @@ public class AuthDatasourceProperties extends DataSourceProperties {
     }
 
     public static class HibernateProperties {
+
+        /**
+         * Database Dialect. In most cases, Hibernate will be able to determine the proper Dialect
+         * to use by asking some questions of the JDBC Connection during bootstrap.
+         */
         String dialect;
+
+        /**
+         * Automatic schema generation.
+         * Available values: (none | create-only | drop | create | create-drop | validate | update)
+         */
         String hbm2ddl;
 
         public String getDialect() {
