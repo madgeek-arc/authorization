@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>gr.athenarc</groupId>
 	<artifactId>authorization</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<name>authorization</name>
 	<description>Spring Boot project for authorization</description>
 	<properties>
@@ -54,7 +54,7 @@
 		<connection>scm:git:ssh://git@github.com/madgeek-arc/authorization.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/madgeek-arc/authorization.git</developerConnection>
 		<url>https://github.com/madgeek-arc/authorization.git</url>
-		<tag>authorization-1.0.0</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<distributionManagement>
