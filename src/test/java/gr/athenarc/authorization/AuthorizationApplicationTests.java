@@ -1,5 +1,6 @@
 package gr.athenarc.authorization;
 
+import gr.athenarc.authorization.config.AuthorizationAutoConfiguration;
 import gr.athenarc.authorization.domain.Permission;
 import gr.athenarc.authorization.service.Authorization;
 import gr.athenarc.authorization.repository.PermissionRepository;
@@ -17,7 +18,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
-@SpringBootTest
+@SpringBootTest(classes = {AuthorizationAutoConfiguration.class})
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class AuthorizationApplicationTests {
 

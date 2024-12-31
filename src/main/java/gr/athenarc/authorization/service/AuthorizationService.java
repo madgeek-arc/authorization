@@ -7,12 +7,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
-@Service
 public class AuthorizationService implements Authorization {
 
     private final PermissionRepository repository;
 
-    @Autowired
     public AuthorizationService(PermissionRepository permissionRepository) {
         this.repository = permissionRepository;
     }

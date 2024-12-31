@@ -1,6 +1,6 @@
 package gr.athenarc.authorization.domain;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 public class Permission {
