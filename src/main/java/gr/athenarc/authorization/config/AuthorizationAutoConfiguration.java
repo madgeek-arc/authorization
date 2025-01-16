@@ -72,7 +72,7 @@ public class AuthorizationAutoConfiguration {
 
     @ConditionalOnClass(value = AuthorizationService.class)
     @Bean
-    public Authorization authorization(PermissionRepository repository) {
+    public AuthorizationService authorization(PermissionRepository repository) {
         return new AuthorizationService(repository);
     }
 
