@@ -1,9 +1,7 @@
-package gr.athenarc.authorization.service;
+package gr.uoa.di.madgik.authorization.service;
 
-import gr.athenarc.authorization.domain.Permission;
-import gr.athenarc.authorization.repository.PermissionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import gr.uoa.di.madgik.authorization.domain.Permission;
+import gr.uoa.di.madgik.authorization.repository.PermissionRepository;
 
 import java.util.Set;
 

@@ -1,6 +1,6 @@
-package gr.athenarc.authorization.repository;
+package gr.uoa.di.madgik.authorization.repository;
 
-import gr.athenarc.authorization.domain.Permission;
+import gr.uoa.di.madgik.authorization.domain.Permission;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

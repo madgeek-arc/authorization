@@ -1,9 +1,9 @@
-package gr.athenarc.authorization;
+package gr.uoa.di.madgik.authorization;
 
-import gr.athenarc.authorization.config.AuthorizationAutoConfiguration;
-import gr.athenarc.authorization.domain.Permission;
-import gr.athenarc.authorization.service.Authorization;
-import gr.athenarc.authorization.repository.PermissionRepository;
+import gr.uoa.di.madgik.authorization.config.AuthorizationAutoConfiguration;
+import gr.uoa.di.madgik.authorization.domain.Permission;
+import gr.uoa.di.madgik.authorization.service.Authorization;
+import gr.uoa.di.madgik.authorization.repository.PermissionRepository;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;

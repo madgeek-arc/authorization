@@ -1,18 +1,14 @@
-package gr.athenarc.authorization.config;
+package gr.uoa.di.madgik.authorization.config;
 
 import com.zaxxer.hikari.HikariDataSource;
-import gr.athenarc.authorization.repository.PermissionRepository;
-import gr.athenarc.authorization.service.Authorization;
-import gr.athenarc.authorization.service.AuthorizationService;
+import gr.uoa.di.madgik.authorization.repository.PermissionRepository;
+import gr.uoa.di.madgik.authorization.service.AuthorizationService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -31,7 +27,7 @@ import java.util.Map;
 @EnableJpaRepositories(
         entityManagerFactoryRef = "authEntityManagerFactory",
         transactionManagerRef = "authTransactionManager",
-        basePackages = {"gr.athenarc.authorization.repository"})
+        basePackages = {"gr.uoa.di.madgik.authorization.repository"})
 public class AuthorizationAutoConfiguration {
 
     private final AuthDatasourceProperties authDataSourceProperties;
@@ -57,7 +53,7 @@ public class AuthorizationAutoConfiguration {
         LocalContainerEntityManagerFactoryBean authEntityManagerFactory = new LocalContainerEntityManagerFactoryBean();
         authEntityManagerFactory.setDataSource(authDataSource);
         authEntityManagerFactory.setPersistenceUnitName("authPersistentUnit");
-        authEntityManagerFactory.setPackagesToScan("gr.athenarc.authorization.domain");
+        authEntityManagerFactory.setPackagesToScan("gr.uoa.di.madgik.authorization.domain");
         authEntityManagerFactory.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         authEntityManagerFactory.setJpaPropertyMap(authJpaProperties);
         return authEntityManagerFactory;

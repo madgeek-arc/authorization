@@ -1,4 +1,4 @@
-package gr.athenarc.authorization.domain;
+package gr.uoa.di.madgik.authorization.domain;
 
 import jakarta.persistence.*;
 

@@ -1,4 +1,4 @@
-package gr.athenarc.authorization.config;
+package gr.uoa.di.madgik.authorization.config;
 
 
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
