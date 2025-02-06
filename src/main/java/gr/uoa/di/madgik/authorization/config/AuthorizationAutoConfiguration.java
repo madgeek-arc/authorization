@@ -18,10 +18,14 @@ package gr.uoa.di.madgik.authorization.config;
 import com.zaxxer.hikari.HikariDataSource;
 import gr.uoa.di.madgik.authorization.repository.PermissionRepository;
 import gr.uoa.di.madgik.authorization.service.AuthorizationService;
+import jakarta.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -31,46 +35,46 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import jakarta.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.Map;
-
 @AutoConfiguration
-@EnableConfigurationProperties(AuthDatasourceProperties.class)
 @EnableTransactionManagement
+@EnableConfigurationProperties({DataSourceProperties.class, JpaProperties.class})
 @EnableJpaRepositories(
         entityManagerFactoryRef = "authEntityManagerFactory",
         transactionManagerRef = "authTransactionManager",
         basePackages = {"gr.uoa.di.madgik.authorization.repository"})
 public class AuthorizationAutoConfiguration {
 
-    private final AuthDatasourceProperties authDataSourceProperties;
-
-    public AuthorizationAutoConfiguration(AuthDatasourceProperties authDataSourceProperties) {
-        this.authDataSourceProperties = authDataSourceProperties;
+    @Bean("authJpaProperties")
+    @ConfigurationProperties("authorization.jpa")
+    JpaProperties authJpaProperties() {
+        return new JpaProperties();
     }
 
-    @ConditionalOnMissingBean(name = "authDataSource")
+    @Bean(name = "authDataSourceProperties")
+    @ConfigurationProperties("authorization.datasource")
+    public DataSourceProperties authDataSourceProperties() {
+        return new DataSourceProperties();
+    }
+
     @Bean(name = "authDataSource")
-    public DataSource authDataSource() {
+    @ConditionalOnMissingBean(name = "authDataSource")
+    @ConfigurationProperties("authorization.datasource.configuration")
+    public HikariDataSource authDataSource(DataSourceProperties authDataSourceProperties) {
         return authDataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
     }
 
     @Bean(name = "authEntityManagerFactory")
     @ConditionalOnMissingBean(name = "authEntityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean authEntityManagerFactory(@Qualifier("authDataSource") DataSource authDataSource) {
-
-        Map<String, String> authJpaProperties = new HashMap<>();
-        authJpaProperties.put("hibernate.dialect", authDataSourceProperties.getHibernate().getDialect());
-        authJpaProperties.put("hibernate.hbm2ddl.auto", authDataSourceProperties.getHibernate().getHbm2ddl());
-
+    public LocalContainerEntityManagerFactoryBean authEntityManagerFactory(@Qualifier("authDataSource")
+                                                                           HikariDataSource authDataSource,
+                                                                           @Qualifier("authJpaProperties")
+                                                                           JpaProperties authJpaProperties) {
         LocalContainerEntityManagerFactoryBean authEntityManagerFactory = new LocalContainerEntityManagerFactoryBean();
         authEntityManagerFactory.setDataSource(authDataSource);
         authEntityManagerFactory.setPersistenceUnitName("authPersistentUnit");
         authEntityManagerFactory.setPackagesToScan("gr.uoa.di.madgik.authorization.domain");
         authEntityManagerFactory.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
-        authEntityManagerFactory.setJpaPropertyMap(authJpaProperties);
+        authEntityManagerFactory.setJpaPropertyMap(authJpaProperties.getProperties());
         return authEntityManagerFactory;
     }
 

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
-@SpringBootTest(classes = {AuthorizationAutoConfiguration.class})
+@SpringBootTest(classes = {AuthorizationAutoConfiguration.class}, properties = {"spring.profiles.active=test"})
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class AuthorizationApplicationTests {
 
