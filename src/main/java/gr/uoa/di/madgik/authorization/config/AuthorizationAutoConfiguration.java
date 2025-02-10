@@ -59,7 +59,8 @@ public class AuthorizationAutoConfiguration {
     @Bean(name = "authDataSource")
     @ConditionalOnMissingBean(name = "authDataSource")
     @ConfigurationProperties("authorization.datasource.configuration")
-    public HikariDataSource authDataSource(DataSourceProperties authDataSourceProperties) {
+    public HikariDataSource authDataSource(
+            @Qualifier("authDataSourceProperties") DataSourceProperties authDataSourceProperties) {
         return authDataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
     }
 
