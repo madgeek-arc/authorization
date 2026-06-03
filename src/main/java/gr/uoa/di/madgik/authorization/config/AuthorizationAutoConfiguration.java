@@ -1,5 +1,5 @@
-/**
- * Copyright 2021-2025 OpenAIRE AMKE
+/*
+ * Copyright 2021-2026 OpenAIRE AMKE
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package gr.uoa.di.madgik.authorization.config;
 
 import com.zaxxer.hikari.HikariDataSource;
 import gr.uoa.di.madgik.authorization.repository.PermissionRepository;
+import gr.uoa.di.madgik.authorization.service.Authorization;
 import gr.uoa.di.madgik.authorization.service.AuthorizationService;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
@@ -86,7 +87,7 @@ public class AuthorizationAutoConfiguration {
         return new JpaTransactionManager(authEntityManagerFactory);
     }
 
-    @ConditionalOnClass(value = AuthorizationService.class)
+    @ConditionalOnMissingBean(Authorization.class)
     @Bean
     public AuthorizationService authorization(PermissionRepository repository) {
         return new AuthorizationService(repository);
