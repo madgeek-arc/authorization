@@ -1,5 +1,5 @@
-/**
- * Copyright 2021-2025 OpenAIRE AMKE
+/*
+ * Copyright 2021-2026 OpenAIRE AMKE
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package gr.uoa.di.madgik.authorization.service;
 
 import gr.uoa.di.madgik.authorization.domain.Permission;
@@ -34,8 +35,18 @@ public class AuthorizationService implements Authorization {
     }
 
     @Override
+    public boolean canDo(String sub, String action, String obj, String group) {
+        return repository.existsBySubjectAndActionAndObjectAndSubjectGroup(sub, action, obj, group);
+    }
+
+    @Override
     public Set<Permission> whoCan(String action, String obj) {
         return repository.findByActionAndObject(action, obj);
+    }
+
+    @Override
+    public Set<Permission> whoCan(String action, String obj, String group) {
+        return repository.findByActionAndObjectAndSubjectGroup(action, obj, group);
     }
 
     @Override
@@ -44,7 +55,17 @@ public class AuthorizationService implements Authorization {
     }
 
     @Override
+    public Set<Permission> whatCan(String sub, String obj, String group) {
+        return repository.findBySubjectAndObjectAndSubjectGroup(sub, obj, group);
+    }
+
+    @Override
     public Set<Permission> whereCan(String sub, String action) {
         return repository.findBySubjectAndAction(sub, action);
+    }
+
+    @Override
+    public Set<Permission> whereCan(String sub, String action, String group) {
+        return repository.findBySubjectAndActionAndSubjectGroup(sub, action, group);
     }
 }

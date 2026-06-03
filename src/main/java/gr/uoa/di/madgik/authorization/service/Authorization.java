@@ -1,5 +1,5 @@
-/**
- * Copyright 2021-2025 OpenAIRE AMKE
+/*
+ * Copyright 2021-2026 OpenAIRE AMKE
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package gr.uoa.di.madgik.authorization.service;
 
 import gr.uoa.di.madgik.authorization.domain.Permission;
@@ -23,17 +24,31 @@ public interface Authorization {
 
     boolean canDo(String sub, String action, String obj);
 
+    default boolean canDo(String sub, String action, String obj, String group) {
+        return canDo(sub, action, obj);
+    }
+
     default boolean canDo(Permission permission) {
-        boolean result = false;
-        if (permission != null) {
-            result = canDo(permission.getSubject(), permission.getAction(), permission.getObject());
-        }
-        return result;
+        if (permission == null) return false;
+        return canDo(permission.getSubject(), permission.getAction(),
+                permission.getObject(), permission.getSubjectGroup());
     }
 
     Set<Permission> whoCan(String action, String obj);
 
+    default Set<Permission> whoCan(String action, String obj, String group) {
+        return whoCan(action, obj);
+    }
+
     Set<Permission> whatCan(String sub, String obj);
 
+    default Set<Permission> whatCan(String sub, String obj, String group) {
+        return whatCan(sub, obj);
+    }
+
     Set<Permission> whereCan(String sub, String action);
+
+    default Set<Permission> whereCan(String sub, String action, String group) {
+        return whereCan(sub, action);
+    }
 }
