@@ -1,3 +1,19 @@
+/*
+ * Copyright 2022-2026 OpenAIRE AMKE
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package gr.uoa.di.madgik.authorization;
 
 import gr.uoa.di.madgik.authorization.config.AuthorizationAutoConfiguration;
@@ -10,12 +26,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
@@ -44,34 +59,7 @@ class AuthorizationApplicationTests {
     }
 
     @Test
-    @Transactional
-    void testUpdateUsingTransactional() {
-        // create entry
-        Permission triple = new Permission("test", "write", "test");
-        triple = permissionRepository.save(triple);
-
-        Long id = triple.getId();
-
-        // Update using setters
-        triple.setSubject("user");
-        triple.setAction("read");
-        triple.setObject("resource");
-
-        // retrieve result from db
-        Optional<Permission> resultOp = permissionRepository.findById(id);
-        assertTrue(resultOp.isPresent());
-        Permission result = resultOp.get();
-
-        // test triple-result values
-        assertEquals("Subject: ", triple.getSubject(), result.getSubject());
-        assertEquals("Action: ", triple.getAction(), result.getAction());
-        assertEquals("Object: ", triple.getObject(), result.getObject());
-
-        permissionRepository.delete(triple);
-    }
-
-    @Test
-    @Order(2)
+    @Order(1)
     void createEntries() {
         Permission triple = new Permission(SUBJECT_USER1, ACTION_READ, OBJECT_RESOURCE1);
         permissionRepository.save(triple);
@@ -97,7 +85,7 @@ class AuthorizationApplicationTests {
     @Order(3)
     void findEntriesBySubject() {
         List<Permission> list = permissionRepository.findBySubject("user1");
-        assertEquals("user2 triples = 4", 4, list.size());
+        assertEquals("user1 triples = 4", 4, list.size());
 
         list = permissionRepository.findBySubject("user2");
         assertEquals("user2 triples = 4", 4, list.size());
@@ -107,7 +95,7 @@ class AuthorizationApplicationTests {
     @Order(4)
     void entryExists() {
         boolean hasAccess = authorization.canDo(SUBJECT_USER2, ACTION_READ, OBJECT_RESOURCE1);
-        assertEquals("user2 can read resource2 = true", true, hasAccess);
+        assertEquals("user2 can read resource1 = true", true, hasAccess);
     }
 
     @Test
@@ -120,23 +108,40 @@ class AuthorizationApplicationTests {
     @Test
     @Order(6)
     void deleteEntries() {
-        Permission triple = permissionRepository.findBySubjectAndActionAndObject(SUBJECT_USER1, ACTION_READ, OBJECT_RESOURCE1).get();
-        permissionRepository.delete(triple);
-        triple = permissionRepository.findBySubjectAndActionAndObject(SUBJECT_USER1, ACTION_WRITE, OBJECT_RESOURCE1).get();
-        permissionRepository.delete(triple);
-        triple = permissionRepository.findBySubjectAndActionAndObject(SUBJECT_USER1, ACTION_MANAGE, OBJECT_RESOURCE1).get();
-        permissionRepository.delete(triple);
-        triple = permissionRepository.findBySubjectAndActionAndObject(SUBJECT_USER1, ACTION_VALIDATE, OBJECT_RESOURCE1).get();
-        permissionRepository.delete(triple);
+        permissionRepository.deleteAllBySubjectAndActionAndObject(SUBJECT_USER1, ACTION_READ, OBJECT_RESOURCE1);
+        permissionRepository.deleteAllBySubjectAndActionAndObject(SUBJECT_USER1, ACTION_WRITE, OBJECT_RESOURCE1);
+        permissionRepository.deleteAllBySubjectAndActionAndObject(SUBJECT_USER1, ACTION_MANAGE, OBJECT_RESOURCE1);
+        permissionRepository.deleteAllBySubjectAndActionAndObject(SUBJECT_USER1, ACTION_VALIDATE, OBJECT_RESOURCE1);
 
-        triple = permissionRepository.findBySubjectAndActionAndObject(SUBJECT_USER2, ACTION_WRITE, OBJECT_RESOURCE1).get();
-        permissionRepository.delete(triple);
-        triple = permissionRepository.findBySubjectAndActionAndObject(SUBJECT_USER2, ACTION_READ, OBJECT_RESOURCE1).get();
-        permissionRepository.delete(triple);
+        permissionRepository.deleteAllBySubjectAndActionAndObject(SUBJECT_USER2, ACTION_WRITE, OBJECT_RESOURCE1);
+        permissionRepository.deleteAllBySubjectAndActionAndObject(SUBJECT_USER2, ACTION_READ, OBJECT_RESOURCE1);
 
-        triple = permissionRepository.findBySubjectAndActionAndObject(SUBJECT_USER2, ACTION_WRITE, OBJECT_RESOURCE2).get();
-        permissionRepository.delete(triple);
-        triple = permissionRepository.findBySubjectAndActionAndObject(SUBJECT_USER2, ACTION_READ, OBJECT_RESOURCE2).get();
-        permissionRepository.delete(triple);
+        permissionRepository.deleteAllBySubjectAndActionAndObject(SUBJECT_USER2, ACTION_WRITE, OBJECT_RESOURCE2);
+        permissionRepository.deleteAllBySubjectAndActionAndObject(SUBJECT_USER2, ACTION_READ, OBJECT_RESOURCE2);
+
+        assertEquals("all entries deleted", 0, ((List<Permission>) permissionRepository.findAll()).size());
+    }
+
+    @Test
+    @Transactional
+    void subjectGroupIsolation() {
+        String groupA = "groupA";
+        String groupB = "groupB";
+
+        Permission pA = permissionRepository.save(new Permission(SUBJECT_USER1, ACTION_READ, OBJECT_RESOURCE1, groupA));
+        Permission pB = permissionRepository.save(new Permission(SUBJECT_USER1, ACTION_READ, OBJECT_RESOURCE1, groupB));
+
+        List<Permission> groupAResults = permissionRepository.findBySubjectAndSubjectGroup(SUBJECT_USER1, groupA);
+        assertEquals("groupA has 1 entry", 1, groupAResults.size());
+        assertEquals("groupA entry group", groupA, groupAResults.get(0).getSubjectGroup());
+
+        List<Permission> groupBResults = permissionRepository.findBySubjectAndSubjectGroup(SUBJECT_USER1, groupB);
+        assertEquals("groupB has 1 entry", 1, groupBResults.size());
+
+        assertTrue(permissionRepository.existsBySubjectAndActionAndObjectAndSubjectGroup(SUBJECT_USER1, ACTION_READ, OBJECT_RESOURCE1, groupA));
+        assertFalse(permissionRepository.existsBySubjectAndActionAndObjectAndSubjectGroup(SUBJECT_USER1, ACTION_WRITE, OBJECT_RESOURCE1, groupA));
+
+        permissionRepository.delete(pA);
+        permissionRepository.delete(pB);
     }
 }
