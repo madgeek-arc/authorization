@@ -1,5 +1,5 @@
-/**
- * Copyright 2021-2025 OpenAIRE AMKE
+/*
+ * Copyright 2021-2026 OpenAIRE AMKE
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package gr.uoa.di.madgik.authorization.domain;
 
 import jakarta.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Permission {
@@ -53,36 +55,38 @@ public class Permission {
         this.id = id;
     }
 
-    public String getSubjectGroup() {
-        return subjectGroup;
-    }
-
-    public void setSubjectGroup(String group) {
-        this.subjectGroup = group;
-    }
-
+    // Business-key fields are intentionally read-only after construction so that
+    // hashCode stays stable when a Permission is held inside a Set.
     public String getSubject() {
         return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
     }
 
     public String getAction() {
         return action;
     }
 
-    public void setAction(String action) {
-        this.action = action;
-    }
-
     public String getObject() {
         return object;
     }
 
-    public void setObject(String object) {
-        this.object = object;
+    public String getSubjectGroup() {
+        return subjectGroup;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Permission)) return false;
+        Permission that = (Permission) o;
+        return Objects.equals(subject, that.subject)
+                && Objects.equals(action, that.action)
+                && Objects.equals(object, that.object)
+                && Objects.equals(subjectGroup, that.subjectGroup);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(subject, action, object, subjectGroup);
     }
 
     @Override
