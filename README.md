@@ -10,7 +10,6 @@ action on this object?*
 |---|---|
 | Component | Authorization (`gr.uoa.di.madgik:authorization`) |
 | Type | Supporting service (Java library embedded in a host application, not deployed on its own) |
-| Status | Released (`v2.0.0`); `main` is `2.1.0-SNAPSHOT` |
 | Technology | Java 21, Spring Boot 3.5 auto-configuration, Spring Data JPA / Hibernate, HikariCP, Maven |
 | API | No (Java API only) |
 | Swagger | Not applicable |
