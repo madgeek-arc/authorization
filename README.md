@@ -70,7 +70,7 @@ replace the host's `spring.datasource.*` / JPA setup. Write permissions inside t
 ## Documentation
 
 - [Architecture](docs/architecture.md) · [Integration](docs/integration.md)
-- [Configuration](docs/configuration.md) · [Security](docs/security.md)
+- [Configuration](docs/configuration.md) · [Security model](docs/security-model.md) · [Security policy](SECURITY.md)
 - [Development](docs/development.md) · [Testing](docs/testing.md)
 - [Contributing](CONTRIBUTING.md) · [Changelog](CHANGELOG.md)
 

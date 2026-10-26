@@ -85,7 +85,7 @@ flowchart LR
 
 ## Security
 
-See [security.md](security.md).
+See [security-model.md](security-model.md).
 
 ## Significant design decisions
 

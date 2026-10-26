@@ -1,4 +1,4 @@
-# Authorization — Security
+# Authorization — Security model
 
 ## Authorisation model
 
