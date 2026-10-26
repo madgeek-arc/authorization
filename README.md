@@ -4,18 +4,6 @@ A Spring Boot auto-configured library that stores permissions as `(subject, acti
 tuples in a dedicated relational database and answers questions such as *can this subject do this
 action on this object?*
 
-## Component metadata
-
-| Field | Value |
-|---|---|
-| Component | Authorization (`gr.uoa.di.madgik:authorization`) |
-| Type | Supporting service (Java library embedded in a host application, not deployed on its own) |
-| Technology | Java 21, Spring Boot 3.5 auto-configuration, Spring Data JPA / Hibernate, HikariCP, Maven |
-| API | No (Java API only) |
-| Swagger | Not applicable |
-| Deployment | Library (Maven artefact) |
-| Documentation | [docs/](docs/) |
-
 ## Role
 
 Provides the per-resource permission store used by backend services to authorise actions on
