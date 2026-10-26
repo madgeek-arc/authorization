@@ -36,28 +36,33 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+/**
+ * Registers the permission store on its own data source, entity manager factory and transaction manager.
+ * These beans are not default candidates, so they don't satisfy by-type injection or
+ * {@code @ConditionalOnMissingBean} checks and leave the host's own data source and JPA setup in place.
+ */
 @AutoConfiguration
 @EnableTransactionManagement
-@EnableConfigurationProperties({DataSourceProperties.class, JpaProperties.class})
+@EnableConfigurationProperties
 @EnableJpaRepositories(
         entityManagerFactoryRef = "authEntityManagerFactory",
         transactionManagerRef = "authTransactionManager",
         basePackages = {"gr.uoa.di.madgik.authorization.repository"})
 public class AuthorizationAutoConfiguration {
 
-    @Bean("authJpaProperties")
+    @Bean(name = "authJpaProperties", defaultCandidate = false)
     @ConfigurationProperties("authorization.jpa")
     JpaProperties authJpaProperties() {
         return new JpaProperties();
     }
 
-    @Bean(name = "authDataSourceProperties")
+    @Bean(name = "authDataSourceProperties", defaultCandidate = false)
     @ConfigurationProperties("authorization.datasource")
     public DataSourceProperties authDataSourceProperties() {
         return new DataSourceProperties();
     }
 
-    @Bean(name = "authDataSource")
+    @Bean(name = "authDataSource", defaultCandidate = false)
     @ConditionalOnMissingBean(name = "authDataSource")
     @ConfigurationProperties("authorization.datasource.configuration")
     public HikariDataSource authDataSource(
@@ -65,7 +70,7 @@ public class AuthorizationAutoConfiguration {
         return authDataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
     }
 
-    @Bean(name = "authEntityManagerFactory")
+    @Bean(name = "authEntityManagerFactory", defaultCandidate = false)
     @ConditionalOnMissingBean(name = "authEntityManagerFactory")
     public LocalContainerEntityManagerFactoryBean authEntityManagerFactory(@Qualifier("authDataSource")
                                                                            HikariDataSource authDataSource,
@@ -80,7 +85,7 @@ public class AuthorizationAutoConfiguration {
         return authEntityManagerFactory;
     }
 
-    @Bean(name = "authTransactionManager")
+    @Bean(name = "authTransactionManager", defaultCandidate = false)
     @ConditionalOnMissingBean(name = "authTransactionManager")
     public PlatformTransactionManager authTransactionManager(
             @Qualifier("authEntityManagerFactory") EntityManagerFactory authEntityManagerFactory) {

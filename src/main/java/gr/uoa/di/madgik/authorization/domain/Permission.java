@@ -20,6 +20,10 @@ import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
+@Table(
+        uniqueConstraints = @UniqueConstraint(name = "uk_permission_tuple",
+                columnNames = {"subject", "action", "object", "subjectGroup"}),
+        indexes = @Index(name = "idx_permission_action_object", columnList = "action, object"))
 public class Permission {
     private static final String DEFAULT_GROUP = "default";
 
