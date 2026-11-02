@@ -1,29 +1,19 @@
 # Changelog
 
-## Unreleased
-
-Changes on `main` since `v2.0.0`, taken from the commit history.
+## [2.1.0](https://github.com/madgeek-arc/authorization/compare/v2.0.0...v2.1.0) (2026-11-02)
 
 ### Features
 
-* Add group-aware overloads to the `Authorization` interface with backward-compatible default implementations ([9066fa9](https://github.com/madgeek-arc/authorization/commit/9066fa9))
+* add group-aware overloads to Authorization interface with default backward-compatible implementations ([9066fa9](https://github.com/madgeek-arc/authorization/commit/9066fa9ace5aef0016907c24a470714d97ed1b15))
 
 ### Bug Fixes
 
-* Stop shipping `application.properties` in the jar (H2 file database under `/tmp`, `admin`/`password`, H2 console at `/h2`). Hosts must configure `authorization.datasource.*` themselves
-* Declare the `auth*` infrastructure beans with `defaultCandidate = false` and stop enabling the global `DataSourceProperties`/`JpaProperties` beans, so the host's default `DataSource`, JPA and transaction manager auto-configuration is no longer displaced
-* Add a unique constraint on `(subject, action, object, subjectGroup)` (`uk_permission_tuple`) and an index on `(action, object)`. With `hbm2ddl.auto=update`, existing duplicate rows must be removed before the constraint can be created
-* Replace `@ConditionalOnClass` with `@ConditionalOnMissingBean(Authorization.class)` so downstream applications can supply their own implementation ([9754906](https://github.com/madgeek-arc/authorization/commit/9754906))
-* Override `equals`/`hashCode` on `Permission` and remove setters to keep `hashCode` stable inside sets ([fc1f9d5](https://github.com/madgeek-arc/authorization/commit/fc1f9d5))
-* Use the `authTransactionManager` in `@Transactional` annotations ([3f4947d](https://github.com/madgeek-arc/authorization/commit/3f4947d))
-
-### Tests
-
-* Cover coexistence with the host's data source and rejection of duplicate tuples
-
-### Documentation
-
-* Add README, `docs/`, contribution guide
+* annotate with Transactional using the correct transaction manager ([3f4947d](https://github.com/madgeek-arc/authorization/commit/3f4947d4e9c11bd7dca98935b0b50ad09f8dd904))
+* enforce unique permission tuples and index action/object lookups ([84fb35d](https://github.com/madgeek-arc/authorization/commit/84fb35d35d9aa5fdac8e0f755295d8ee8e648401))
+* keep the host's default data source and JPA setup intact ([b45e1ea](https://github.com/madgeek-arc/authorization/commit/b45e1eabe72c0defa5b96d674f52d867b41913a1))
+* override equals/hashCode and remove setters to keep hashCode stable when instances are held in Sets ([fc1f9d5](https://github.com/madgeek-arc/authorization/commit/fc1f9d538cc728aa9ca2e62a175766946d993505))
+* Replace @ConditionalOnClass with @ConditionalOnMissingBean(Authorization.class) to enable downstream apps to supply their own implementation ([9754906](https://github.com/madgeek-arc/authorization/commit/975490649eff3ff18c1db4969215ce096769a5b6))
+* stop shipping application.properties in the library jar ([fb09096](https://github.com/madgeek-arc/authorization/commit/fb0909618c4cfa015a72c92326816ba41fe6d760))
 
 ## 2.0.0 (2025-02-11)
 
